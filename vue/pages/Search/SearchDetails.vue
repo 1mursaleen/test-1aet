@@ -38,7 +38,7 @@
                         </span>
                         <span v-if="props.column.field == 'url'" class="text-blue-700">
                             <a :href="props.row.url" target="_blank">
-                                {{ props.row.url }}
+                                {{ limitString(props.row.url) }}
                             </a>
                         </span>
                     </template>
@@ -146,6 +146,10 @@ export default {
         const rankAnalytics = ref([])
         const isLoading = ref(true)
 
+        const limitString = (str, maxLength = 80) => str.length <= maxLength
+            ? str
+            : str.slice(0, maxLength) + '...'
+
         const fetchSearch = async (searchID = 1) => {
             progress.start()
             try {
@@ -181,6 +185,7 @@ export default {
             fetchSearch,
             searchDetails,
             rankAnalytics,
+            limitString,
         }
     }
 };
