@@ -1,16 +1,22 @@
 <template>
-    <form @submit.prevent="onSubmit" class="grid lg:grid-cols-7 md:grid-cols-2 grid-cols-1 gap-5 items-start">
+    <form @submit.prevent="onSubmit" class="grid lg:grid-cols-7 grid-cols-1 gap-5 items-start">
 
-        <Select label="Location" v-model="location_code" name="location_code" placeholder="Select Location" :options="locationOptions" v-if="locationOptions.length" :error="location_codeError" />
+        <div class="lg:col-span-1 col-span-7">
+            <Select label="Location" v-model="location_code" name="location_code" placeholder="Select Location" :options="locationOptions" v-if="locationOptions.length" :error="location_codeError" />
+        </div>
 
-        <Select label="Device" v-model="device" name="device" placeholder="Select Device" :options="deviceOptions" :error="deviceError" />
+        <div class="lg:col-span-1 col-span-7">
+            <Select label="Device" v-model="device" name="device" placeholder="Select Device" :options="deviceOptions" :error="deviceError" />
+        </div>
 
-        <Textinput label="Repetitions" type="number" placeholder="1" name="repetitions" v-model="repetitions" :error="repetitionsError" />
+        <div class="lg:col-span-1 col-span-7">
+            <Textinput label="Repetitions" type="number" placeholder="1" name="repetitions" v-model="repetitions" :error="repetitionsError" />
+        </div>
 
-        <div class="col-span-4">
+        <div class="lg:col-span-4 col-span-7">
             <InputGroup label="Keyword" v-model="keyword" type="text" placeholder="Enter Keywords" :error="keywordError">
                 <template v-slot:append>
-                    <Button type="submit" icon="heroicons-outline:search" text="Track" btnClass="btn-outline-primary" :isLoading="isSubmitting" />
+                    <Button type="submit" icon="heroicons-outline:search" text="Track" btnClass="btn-outline-primary" :isLoading="isSubmitting" :disabled="isSubmitting" />
                 </template>
             </InputGroup>
         </div>
@@ -73,8 +79,14 @@ export default {
         const { value: location_code, errorMessage: location_codeError } = useField("location_code")
         const { value: device, errorMessage: deviceError } = useField("device")
 
+        let isFormSubmitting = false
+
         const onSubmit = handleSubmit(async () => {
             try {
+                if (isFormSubmitting) return null
+
+                isFormSubmitting = true
+
                 const response = await axios.post(endpoints.trackRank(), {
                     keyword: values.keyword,
                     device: values.device,
@@ -85,11 +97,16 @@ export default {
                 const search = response.data.data.search
 
                 router.push({ name: 'search-details', params: { id: search.id } })
+
+                isFormSubmitting = false
             } catch (error) {
                 toast.error("Error tracking ranks: " + error.message, {
                     timeout: 2000,
                 })
+
+                isFormSubmitting = false
             }
+
         })
 
         const fetchLocations = async () => {

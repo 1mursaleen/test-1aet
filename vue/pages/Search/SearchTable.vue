@@ -28,6 +28,11 @@
                         </span>
                         <span class="text-sm text-slate-600  capitalize">{{ props.row.user.name }}</span>
                     </span>
+                    <span v-if="props.column.field == 'keyword'" class="text-blue-500 ">
+                        <router-link :to="{ name: 'search-details', params: { id: props.row.id } }">
+                            {{ props.row.keyword }}
+                        </router-link>
+                    </span>
                     <span v-if="props.column.field == 'date'" class="text-slate-500 ">
                         {{ props.row.date }}
                     </span>
