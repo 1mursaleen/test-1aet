@@ -3,15 +3,11 @@
 </template>
 
 <script>
-import Card from "@/components/Card"
 import window from "@/mixins/window"
 import { ref, reactive, onMounted } from 'vue'
 
 export default {
     mixins: [window],
-    components: {
-        Card,
-    },
     props: {
         analytics: {
             type: Array,

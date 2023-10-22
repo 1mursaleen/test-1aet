@@ -3,12 +3,16 @@
 
         <h5 v-if="isLoading" class="text-primary-500 text-center">Mapping Data...</h5>
 
-        <Card title="Rankings Chart">
-            <ScatterChart v-if="!isLoading" :analytics="rankAnalytics" />
-        </Card>
-
         <Card title="Search Information" imaClass="rounded-md" noborder>
             <SearchInfo :search="searchDetails" />
+        </Card>
+
+        <Card title="Fluctuation Graph for URLs (clicking on points will open URL)">
+            <RankFluctuationGraph v-if="!isLoading" :analytics="rankAnalytics" :repetitions="searchDetails.repetitions" />
+        </Card>
+
+        <Card title="Scatter Graph for Domains">
+            <ScatterChart v-if="!isLoading" :analytics="rankAnalytics" />
         </Card>
 
         <div>
@@ -70,6 +74,7 @@ import endpoints from '@/api/endpoints'
 import { useRoute } from 'vue-router'
 import progress from '@/plugins/progress'
 import { useToast } from "vue-toastification"
+import RankFluctuationGraph from './RankFluctuationGraph.vue'
 
 export default {
     components: {
@@ -82,6 +87,7 @@ export default {
         MenuItem,
         SearchInfo,
         ScatterChart,
+        RankFluctuationGraph
     },
 
     data () {
