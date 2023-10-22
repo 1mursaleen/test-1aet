@@ -1,5 +1,4 @@
 <template>
-    <!-- The chart container -->
     <div ref="chartDiv" style="width: 100%; height: 3000px;"></div>
 </template>
 
@@ -22,29 +21,19 @@ export default {
         let chart
 
         const generateChartData = () => {
-            const data = []
+            return analytics.reduce((data, item) => {
+                const iterationIndex = data.findIndex((d) => d.iteration === item.repetition)
 
-            if (analytics.length === 0) return data
+                if (iterationIndex === -1) {
+                    const newDataPoint = { iteration: item.repetition }
+                    newDataPoint[item.url] = item.rank_absolute || 100
+                    data.push(newDataPoint)
+                } else {
+                    data[iterationIndex][item.url] = item.rank_absolute || 100
+                }
 
-            const urls = Array.from(new Set(analytics.map((item) => item.url)))
-            const repetitions = Array.from(
-                new Set(analytics.map((item) => item.repetition))
-            )
-
-            repetitions.forEach((iteration) => {
-                const dataPoint = { iteration }
-
-                urls.forEach((url) => {
-                    const rank = analytics.find(
-                        (item) => item.url === url && item.repetition === iteration
-                    )
-                    dataPoint[url] = rank ? rank.rank_absolute : 100
-                })
-
-                data.push(dataPoint)
-            })
-
-            return data
+                return data
+            }, [])
         }
 
         const createChart = () => {
@@ -60,6 +49,7 @@ export default {
             valueAxis.title.text = "Ranking"
 
             const urls = Array.from(new Set(analytics.map((item) => item.url)))
+
             urls.forEach((url, index) => {
                 const series = chart.series.push(new am4charts.LineSeries())
                 series.dataFields.valueY = url
