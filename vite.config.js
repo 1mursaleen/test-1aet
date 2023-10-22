@@ -6,6 +6,12 @@ import laravel from 'laravel-vite-plugin'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    build: {
+        rollupOptions: {
+        },
+        // nodeArgs: ['--max_old_space_size=4096'],
+        nodeArgs: ['--max_old_space_size=2048'],
+    },
     plugins: [
         laravel({
             input: './vue/main.js',
